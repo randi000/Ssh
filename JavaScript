@@ -1,0 +1,28 @@
+const http = require('http')
+
+const port = process.env.PORT || '10000'
+let host = '127.0.0.1'
+
+if (process.env.NODE_ENV === 'production') {
+  console.log('NODE_ENV is set to "production"')
+  host = '0.0.0.0'
+}
+
+http.createServer((req, res) => {
+  console.log('request', req.url)
+
+  if (req.url === '/') {
+    res.writeHead(200, { 'Content-Type': 'text/html' })
+    res.end('Hello, World!', 'utf-8')
+  } else if (req.url === '/exception') {
+    try{
+      // Some code that causes an exception
+      null.toString()
+    } catch(e) {
+      console.log(e)
+      res.writeHead(500, { 'Content-Type': 'text/html' })
+      res.end(`An error occurred: ${e.message}`)
+    }
+  }
+}).listen(port, host)
+console.log(`Server running at http://${host}:${port}`)
